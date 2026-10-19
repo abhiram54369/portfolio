@@ -63,7 +63,7 @@ function draw(){
  const cs=Math.cos(rotation),sn=Math.sin(rotation),tilt=.24,ct=Math.cos(tilt),st=Math.sin(tilt);
  const projected=points.map(p=>{const x=p.x*cs-p.z*sn,z=p.x*sn+p.z*cs,y=p.y*ct-z*st,zz=p.y*st+z*ct;const perspective=2.9/(2.9-zz*.35);return{x:cx+x*radius*perspective,y:cy+y*radius*perspective,z:zz};}).sort((a,b)=>a.z-b.z);
  ctx.strokeStyle='#5b8fff18';ctx.lineWidth=.7;ctx.beginPath();ctx.ellipse(cx,cy,radius*1.17,radius*.32,-.38,0,Math.PI*2);ctx.stroke();
- projected.forEach((p,i)=>{const alpha=.15+(p.z+1)*.37;const warm=(i%13)<3;ctx.fillStyle=warm?`rgba(91,143,255,${alpha})`:`rgba(208,202,178,${alpha*.8})`;ctx.beginPath();ctx.arc(p.x,p.y,p.z>.3?1.4:.8,0,Math.PI*2);ctx.fill();});
+ projected.forEach((p,i)=>{const alpha=.15+(p.z+1)*.37;const warm=(i%13)<3;ctx.fillStyle=warm?`rgba(123,170,255,${alpha})`:`rgba(177,149,255,${alpha*.8})`;ctx.beginPath();ctx.arc(p.x,p.y,p.z>.3?1.4:.8,0,Math.PI*2);ctx.fill();});
  ctx.strokeStyle='#5b8fff45';ctx.beginPath();ctx.moveTo(cx-7,cy);ctx.lineTo(cx+7,cy);ctx.moveTo(cx,cy-7);ctx.lineTo(cx,cy+7);ctx.stroke();
 }
 function animate(time){if(visible&&!motionPreference.matches&&time-lastTime>32){rotation+=.003;draw();lastTime=time;}frame=requestAnimationFrame(animate);}
@@ -71,3 +71,9 @@ new ResizeObserver(resizeCanvas).observe(canvas);
 new IntersectionObserver(entries=>visible=entries[0].isIntersecting).observe(canvas);
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;}else if(!frame)frame=requestAnimationFrame(animate);});
 frame=requestAnimationFrame(animate);
+
+// Animate illustrative project previews only while visible.
+const projectMotionObserver=new IntersectionObserver(entries=>{for(const entry of entries)entry.target.classList.toggle('in-view',entry.isIntersecting);},{threshold:.12});
+document.querySelectorAll('.project-card').forEach(card=>projectMotionObserver.observe(card));
+document.querySelectorAll('.fitness-bars span,.audio-wave i').forEach((bar,index)=>bar.style.setProperty('--delay',`${-(index%11)*.17}s`));
+if(window.lucide)lucide.createIcons({attrs:{'stroke-width':1.6}});

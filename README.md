@@ -1,54 +1,42 @@
 # Abhiram Javvadi — Portfolio
 
-Responsive static portfolio with a procedural particle sphere, three project showcases, project detail dialogs, and 18 credential entries (17 original certificate PDFs plus the user-provided HCL DevOps credential) with category filtering and search, and a downloadable one-page resume PDF. No build step or framework dependencies.
+A responsive dark-blue and violet portfolio with an animated orbital hero, three illustrated project showcases, education and skills, 18 searchable credential entries, and a downloadable final resume. Static HTML, CSS, and JavaScript; no build step required.
+
+Live site: https://abhiram54369.github.io/portfolio/
 
 ## Run locally
 
-From this directory:
+From this repository:
 
 ```sh
-python3 -m http.server 8080 --directory public
+python3 -m http.server 8080
 ```
 
 Open http://localhost:8080.
 
-## Edit
+## Files
 
-- `public/index.html`: profile, projects, links, and skills
-- `public/styles.css`: design and responsive layout
-- `public/app.js`: certificate metadata, filters, project dialogs, and canvas animation
-- `public/certificates/`: original credential files
+- `index.html`: profile, projects, education, skills, resume, and contact links
+- `styles.css`: responsive dark-blue theme and project animations
+- `app.js`: credential search/filtering, project dialogs, visibility handling, and particle animation
+- `assets/lucide.min.js`: bundled icons; license at `assets/lucide-LICENSE.txt`
+- `certificates/`: original credential files
+- `resume/Abhiram-Javvadi-Resume.pdf`: final one-page internship resume
 
-Typography uses Google Fonts with system fallbacks. Everything else works without third-party requests. Contact links point to the provided GitHub and LinkedIn profiles and email address (abhiramjavvadi149@gmail.com). No invented degree or employment history is included. Education lists C. R. Rao AIMSCS and a completed AI/ML track at IIIT Hyderabad · iHub (February–September), as provided by the user. No year was supplied for the track. EV station visuals are illustrative and explicitly labeled. Course completions are not presented as professional certifications.
+## Content and behavior
 
-The IBM boot camp participation and IBM learning-plan completion are separate supplied documents for the same subject and are labeled accordingly.
+The EV signal, fitness bars, and audio waveform are illustrative project visuals. They do not show live station data or perform audio detection. Project animations pause outside the viewport, and reduced-motion preferences are respected.
 
-## Resume and new entries
+The HCL DevOps entry was supplied by the user without a certificate file, so it has no download link. The other 17 entries link to their original PDFs. The IBM boot camp and learning-plan completion are separate supplied documents on the same subject and are labeled accordingly. Course completions are not presented as professional certifications.
 
-- `public/resume/Abhiram-Javvadi-Resume.pdf` is the final one-page internship resume, with selectable text, clickable contact links, and clearly separated education, skills, projects, experience, and credentials. It uses the supplied portfolio details; `build_resume.py` can regenerate it with ReportLab.
-- The HCL DevOps entry has no attached certificate file; it is shown without a download link.
-- Deepfake Audio Detection is described as a hackathon project. No model, accuracy, dates, or hackathon name have been invented.
+Education and training reflect the supplied details: C. R. Rao AIMSCS, third-year B.Tech CSE (AI & ML), and a completed AI/ML track at IIIT Hyderabad / iHub, February–September. No year was supplied for the track.
 
-## Deploy with Netlify Drop
+## GitHub Pages
 
-1. Sign in to your Netlify account, then open https://app.netlify.com/drop.
-2. Drag the `public` folder into the upload area. It contains `index.html`, `styles.css`, `app.js`, `favicon.svg`, `certificates/`, and `resume/`.
-3. Wait for deployment and open the URL Netlify provides.
-4. For the standalone `abhiram-portfolio.zip`, extract it and upload the extracted folder that directly contains `index.html` instead. The ZIP has the contents of `public` at its root.
-5. To update an existing site, drag the revised folder into the dropzone on that site's Deploys page.
+The working site publishes from `main` and `/(root)` with **Settings > Pages > Deploy from a branch**. The previous custom Pages workflow is disabled; leave it disabled to avoid conflicting deployment paths. Future pushes publish automatically through branch-based Pages.
 
-No build command or server is required. To share broadly, ensure the Netlify project is publicly accessible. Official instructions: https://docs.netlify.com/deploy/create-deploys/#drag-and-drop.
+All assets and downloads use relative paths to support the `/portfolio/` URL.
 
-## Approved design
+## Standalone ZIP
 
-The approved redesign is the main homepage. Project cards retain their original markup and styling. The former `/demo/` URL redirects to the homepage. The final resume and original certificate files are included.
-
-## GitHub Pages deployment
-
-This repository publishes automatically using `.github/workflows/pages.yml` when changes are pushed to `main`. The workflow verifies required assets, uploads the static site, and deploys it to the `github-pages` environment. No Jekyll or application build step is required.
-
-In Settings > Pages, the source is **GitHub Actions**. Check the Actions tab for deployment status or use the workflow's Run workflow button to deploy manually.
-
-Website: https://abhiram54369.github.io/portfolio/
-
-All asset and download paths are relative to support repository subpaths.
+Extract the deployment ZIP and upload its contents directly into a repository root, including `assets/`, `certificates/`, `resume/`, and `.nojekyll`. For Netlify Drop, upload the extracted folder containing `index.html`. No application server is needed for hosting.
