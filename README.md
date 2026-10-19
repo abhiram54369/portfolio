@@ -43,12 +43,12 @@ No build command or server is required. To share broadly, ensure the Netlify pro
 
 The approved redesign is the main homepage. Project cards retain their original markup and styling. The former `/demo/` URL redirects to the homepage. The final resume and original certificate files are included.
 
-## Deploy with GitHub Pages
+## GitHub Pages deployment
 
-1. Create a public repository named `portfolio`.
-2. Upload the extracted deployment ZIP contents directly into the repository root, including `certificates/`, `resume/`, and `.nojekyll`. Do not upload only the ZIP itself.
-3. Commit to `main`.
-4. In Settings > Pages, choose Deploy from a branch, `main`, and `/(root)`, then Save.
-5. Use the website URL shown in the Pages settings after deployment. For the account `abhiram54369` and repository `portfolio`, the expected URL is `https://abhiram54369.github.io/portfolio/`.
+This repository publishes automatically using `.github/workflows/pages.yml` when changes are pushed to `main`. The workflow verifies required assets, uploads the static site, and deploys it to the `github-pages` environment. No Jekyll or application build step is required.
 
-All asset and download paths are relative to support GitHub Pages repository subpaths. The local preview is not a public deployment.
+In Settings > Pages, the source is **GitHub Actions**. Check the Actions tab for deployment status or use the workflow's Run workflow button to deploy manually.
+
+Website: https://abhiram54369.github.io/portfolio/
+
+All asset and download paths are relative to support repository subpaths.
