@@ -173,11 +173,6 @@ body.motion-paused *, body.motion-paused *::before, body.motion-paused *::after 
 .learning-radar { display: flex; gap: 30px; align-items: center; padding-top: 25px; }
 .learning-radar p { color: var(--muted); font-size: 13px; }
 .learning-radar p > span { color: var(--blue); margin-inline: 10px; }
-.currently { display: flex; gap: 26px; align-items: center; background: #102037; border: 1px dashed #486689; padding: 23px; margin-top: 30px; }
-.currently > div { display: flex; gap: 10px; align-items: center; white-space: nowrap; }
-.currently > p { color: var(--muted); font-size: 12px; }
-.currently > p + p { padding-left: 20px; border-left: 1px solid var(--line); }
-.currently > svg { color: var(--blue); margin-left: auto; }
 /* Searchable learning archive: same original PDFs, clearer typographic hierarchy. */
 .credential-controls { display: flex; gap: 22px; align-items: center; justify-content: space-between; margin-bottom: 28px; }
 .filter-tabs { display: flex; gap: 5px; flex-wrap: wrap; }
@@ -298,9 +293,6 @@ dialog .button { margin-top: 25px; }
   .education-panel { padding: 25px; }
   .education-row { gap: 15px; }
   .education-row h3 { font-size: 19px; }
-  .currently { gap: 18px; }
-  .currently > p { font-size: 11px; }
-  .currently .small-label { font-size: 10px; }
   .credential-controls { gap: 15px; }
   .filter-tabs button { padding-inline: 11px; font-size: 11px; }
   .search-box input { width: 140px; }
@@ -352,10 +344,6 @@ dialog .button { margin-top: 25px; }
   .tool-card { padding-inline: 20px; }
   .tool-card h3 { font-size: 24px; }
   .tool-card .small-label { font-size: 10px; }
-  .currently { flex-wrap: wrap; position: relative; padding-right: 45px; gap: 14px 22px; }
-  .currently > div { flex-basis: 100%; }
-  .currently > svg { position: absolute; right: 20px; top: 23px; }
-  .currently > p + p { padding-left: 0; border: 0; }
   .credential-controls { flex-direction: column; align-items: stretch; }
   .search-box input { width: 100%; }
   .certificate-grid { grid-template-columns: 1fr 1fr; }
@@ -452,8 +440,6 @@ dialog .button { margin-top: 25px; }
   .learning-radar { flex-direction: column; align-items: start; gap: 11px; padding-top: 23px; }
   .learning-radar p { font-size: 12px; line-height: 2; }
   .learning-radar p > span { margin-inline: 6px; }
-  .currently { padding: 21px; flex-direction: column; align-items: start; gap: 13px; }
-  .currently > p { font-size: 12px; padding-right: 15px; }
   .filter-tabs { gap: 3px; }
   .filter-tabs button { font-size: 11px; padding: 9px 11px; min-height: 44px; }
   .search-box input { font-size: 16px; }
@@ -518,4 +504,21 @@ dialog .button { margin-top: 25px; }
   .signal-chart path[stroke]:not(.signal-baseline) { stroke-dashoffset: 0; }
   .education-row::after { transform: scaleY(1); }
   .button.primary:hover, .certificate-card[href]:hover, .tool-card:hover .tool-icon { transform: none; }
+}
+
+/* Completed experience, in the same field-notes visual language. */
+.experience-entry { display: grid; grid-template-columns: auto 1fr auto; gap: 26px; align-items: start; padding: 30px; border-block: 1px solid var(--line); background: #0e1c30; }
+.experience-icon { width: 48px; height: 48px; display: grid; place-items: center; background: #172d49; border: 1px solid #46658e; color: var(--blue); }
+.experience-icon svg { width: 23px; height: 23px; }
+.experience-copy { min-width: 0; }
+.experience-copy h3 { margin-top: 11px; font-size: 28px; letter-spacing: -.9px; }
+.experience-copy p { color: var(--muted); margin-top: 14px; font-size: 14px; line-height: 1.85; }
+.experience-state { display: flex; gap: 8px; align-items: center; color: var(--blue); font: 11px/1.7 var(--mono); padding-top: 3px; }
+.experience-state svg { width: 17px; height: 17px; }
+@media(max-width:600px) {
+ .experience-entry { grid-template-columns: auto 1fr; gap: 20px 16px; padding: 24px 20px; }
+ .experience-icon { width: 40px; height: 40px; }
+ .experience-copy h3 { font-size: 25px; }
+ .experience-copy p { font-size: 13px; }
+ .experience-state { grid-column: 2; font-size: 11px; }
 }

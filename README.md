@@ -1,6 +1,6 @@
 # Abhiram Javvadi — Portfolio
 
-A responsive Blueprint portfolio with a navy-and-blue grid, animated builder’s notebook, three illustrated project showcases, an animated education timeline, skills, 18 searchable credential entries, and a downloadable final resume. Blue star trails follow the mouse and clicks release a starburst. Static HTML, CSS, and JavaScript; no build step required.
+A responsive Blueprint portfolio with a navy-and-blue grid, animated builder’s notebook, three illustrated project showcases, an animated education timeline, a completed Infosys Springboard internship under Experience, skills, 18 searchable credential entries, and a downloadable final resume. Blue star trails follow the mouse and clicks release a starburst. Static HTML, CSS, and JavaScript; no build step required.
 
 Live site: https://abhiram54369.github.io/portfolio/
 
