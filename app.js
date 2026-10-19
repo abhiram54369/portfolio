@@ -51,29 +51,106 @@ dialog.querySelector('.dialog-close').addEventListener('click',()=>dialog.close(
 dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
 dialog.addEventListener('close',()=>document.body.style.overflow='');
 document.querySelector('#year').textContent=new Date().getFullYear();
-// A procedural particle sphere, drawn locally without image or 3D dependencies.
-const canvas=document.querySelector('#neural-canvas');
-const ctx=canvas.getContext('2d');
-const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
-let width=0,height=0,rotation=.35,frame=0,lastTime=0,visible=true;
-const points=Array.from({length:1000},(_,i)=>{const y=1-(i/999)*2;const ring=Math.sqrt(1-y*y),a=i*Math.PI*(3-Math.sqrt(5));return {x:Math.cos(a)*ring,y,z:Math.sin(a)*ring};});
-function resizeCanvas(){const rect=canvas.getBoundingClientRect();width=rect.width;height=rect.height;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
-function draw(){
- ctx.clearRect(0,0,width,height);const radius=Math.min(width*.36,height*.37),cx=width*.5,cy=height*.49;
- const cs=Math.cos(rotation),sn=Math.sin(rotation),tilt=.24,ct=Math.cos(tilt),st=Math.sin(tilt);
- const projected=points.map(p=>{const x=p.x*cs-p.z*sn,z=p.x*sn+p.z*cs,y=p.y*ct-z*st,zz=p.y*st+z*ct;const perspective=2.9/(2.9-zz*.35);return{x:cx+x*radius*perspective,y:cy+y*radius*perspective,z:zz};}).sort((a,b)=>a.z-b.z);
- ctx.strokeStyle='#5b8fff18';ctx.lineWidth=.7;ctx.beginPath();ctx.ellipse(cx,cy,radius*1.17,radius*.32,-.38,0,Math.PI*2);ctx.stroke();
- projected.forEach((p,i)=>{const alpha=.15+(p.z+1)*.37;const warm=(i%13)<3;ctx.fillStyle=warm?`rgba(123,170,255,${alpha})`:`rgba(177,149,255,${alpha*.8})`;ctx.beginPath();ctx.arc(p.x,p.y,p.z>.3?1.4:.8,0,Math.PI*2);ctx.fill();});
- ctx.strokeStyle='#5b8fff45';ctx.beginPath();ctx.moveTo(cx-7,cy);ctx.lineTo(cx+7,cy);ctx.moveTo(cx,cy-7);ctx.lineTo(cx,cy+7);ctx.stroke();
-}
-function animate(time){if(visible&&!motionPreference.matches&&time-lastTime>32){rotation+=.003;draw();lastTime=time;}frame=requestAnimationFrame(animate);}
-new ResizeObserver(resizeCanvas).observe(canvas);
-new IntersectionObserver(entries=>visible=entries[0].isIntersecting).observe(canvas);
-document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;}else if(!frame)frame=requestAnimationFrame(animate);});
-frame=requestAnimationFrame(animate);
-
 // Animate illustrative project previews only while visible.
 const projectMotionObserver=new IntersectionObserver(entries=>{for(const entry of entries)entry.target.classList.toggle('in-view',entry.isIntersecting);},{threshold:.12});
 document.querySelectorAll('.project-card').forEach(card=>projectMotionObserver.observe(card));
 document.querySelectorAll('.fitness-bars span,.audio-wave i').forEach((bar,index)=>bar.style.setProperty('--delay',`${-(index%11)*.17}s`));
 if(window.lucide)lucide.createIcons({attrs:{'stroke-width':1.6}});
+
+// Reveal content once; keep it readable even if animation is unavailable.
+const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+const revealTargets = document.querySelectorAll('.section-heading, .project-card, .about-copy, .education-panel, .tool-card, .resume-section, .contact-panel');
+const revealObserver = new IntersectionObserver(entries => {
+ for (const entry of entries) {
+  if (!entry.isIntersecting) continue;
+  entry.target.classList.add('is-visible');
+  revealObserver.unobserve(entry.target);
+ }
+}, {threshold: .08});
+revealTargets.forEach(element => { element.classList.add('reveal'); revealObserver.observe(element); });
+const ambientObserver = new IntersectionObserver(entries => {
+ for (const entry of entries) entry.target.classList.toggle('motion-in-view', entry.isIntersecting);
+});
+document.querySelectorAll('.hero, .education-panel').forEach(element => ambientObserver.observe(element));
+
+// Blue star trail and click burst: lightweight, bounded, and motion-aware.
+const sparkleLayer = document.querySelector('#sparkle-layer');
+const sparkleToggle = document.querySelector('#sparkle-toggle');
+const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+const activeSparks = new Set();
+let sparkleEnabled = true;
+let lastSparkTime = 0;
+try { sparkleEnabled = localStorage.getItem('aj-blue-sparkles') !== 'off'; } catch { /* Storage is optional. */ }
+function clearSparks() {
+ for (const animation of activeSparks) animation.cancel();
+ activeSparks.clear();
+ sparkleLayer.replaceChildren();
+}
+function updateSparklePreference() {
+ const enabled = sparkleEnabled && !motionPreference.matches;
+ sparkleToggle.setAttribute('aria-pressed', String(enabled));
+ sparkleToggle.innerHTML = `<span aria-hidden="true">✦</span> Blue sparkles ${enabled ? 'on' : 'off'}`;
+ sparkleToggle.disabled = motionPreference.matches;
+ if (!enabled) clearSparks();
+}
+function animateSpark(element, keyframes, options) {
+ sparkleLayer.append(element);
+ const animation = element.animate(keyframes, options);
+ activeSparks.add(animation);
+ const cleanup = () => { element.remove(); activeSparks.delete(animation); };
+ animation.onfinish = cleanup;
+ animation.oncancel = cleanup;
+}
+function createStar(x, y, burst = false) {
+ if (activeSparks.size >= 96) return;
+ const star = document.createElement('span');
+ star.className = 'cursor-star';
+ star.textContent = Math.random() > .5 ? '✦' : '✳';
+ star.style.left = `${x}px`;
+ star.style.top = `${y}px`;
+ star.style.fontSize = `${burst ? 9 + Math.random() * 14 : 12 + Math.random() * 7}px`;
+ const angle = Math.random() * Math.PI * 2;
+ const distance = burst ? 25 + Math.random() * 65 : 12 + Math.random() * 15;
+ const dx = burst ? Math.cos(angle) * distance : (Math.random() - .5) * 20;
+ const dy = burst ? Math.sin(angle) * distance : -distance;
+ animateSpark(star, [
+  {transform: 'translate(-50%,-50%) scale(.4) rotate(0deg)', opacity: 0},
+  {offset: .15, transform: 'translate(-50%,-50%) scale(1) rotate(10deg)', opacity: 1},
+  {transform: `translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) scale(.08) rotate(85deg)`, opacity: 0}
+ ], {duration: burst ? 700 + Math.random() * 220 : 650, easing: 'cubic-bezier(.15,.65,.35,1)'});
+}
+document.addEventListener('pointermove', event => {
+ if (!sparkleEnabled || motionPreference.matches || !finePointer.matches || event.pointerType !== 'mouse') return;
+ const now = performance.now();
+ if (now - lastSparkTime < 100) return;
+ lastSparkTime = now;
+ createStar(event.clientX, event.clientY);
+}, {passive: true});
+document.addEventListener('pointerdown', event => {
+ if (!sparkleEnabled || motionPreference.matches || event.button !== 0 || event.target.closest('#sparkle-toggle')) return;
+ for (let i = 0; i < 16; i++) createStar(event.clientX, event.clientY, true);
+ if (activeSparks.size >= 96) return;
+ const halo = document.createElement('span');
+ halo.className = 'sparkle-halo';
+ halo.style.left = `${event.clientX - 9}px`;
+ halo.style.top = `${event.clientY - 9}px`;
+ animateSpark(halo, [{transform: 'scale(.4)', opacity: .9}, {transform: 'scale(5)', opacity: 0}], {duration: 550, easing: 'ease-out'});
+}, {passive: true});
+sparkleToggle.addEventListener('click', () => {
+ sparkleEnabled = !sparkleEnabled;
+ try { localStorage.setItem('aj-blue-sparkles', sparkleEnabled ? 'on' : 'off'); } catch { /* Storage is optional. */ }
+ updateSparklePreference();
+});
+motionPreference.addEventListener('change', updateSparklePreference);
+document.addEventListener('visibilitychange', () => {
+ document.body.classList.toggle('motion-paused', document.hidden);
+ if (document.hidden) clearSparks();
+});
+// A native dialog is in the browser's top layer; carry the effects with it.
+dialog.addEventListener('toggle', () => {
+ if (dialog.open) dialog.append(sparkleLayer);
+ else document.body.append(sparkleLayer);
+});
+updateSparklePreference();
+
+document.body.classList.toggle('motion-paused', document.hidden);
