@@ -7,9 +7,7 @@
   --line: #2c4161;
   --blue: #8dbbff;
   --accent: #8dbbff;
-  --yellow: #f2c94c;
-  --yellow-soft: #f2c94c22;
-  --red: var(--yellow);
+  --red: var(--blue);
   --body: 'Space Grotesk', Arial, sans-serif;
   --mono: 'IBM Plex Mono', monospace;
 }
@@ -28,8 +26,7 @@ svg { width: 19px; height: 19px; flex-shrink: 0; vertical-align: middle; }
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { line-height: 1.15; font-weight: 500; }
 h2 { font-size: clamp(32px, 3.6vw, 48px); letter-spacing: -1.9px; }
-h2 > span, .accent { color: var(--blue); }
-.red { color: var(--yellow); }
+h2 > span, .accent, .red { color: var(--blue); }
 .shell { width: min(1180px, calc(100% - 96px)); margin-inline: auto; }
 .eyebrow, .small-label { font: 11px/1.7 var(--mono); letter-spacing: 1.3px; display: flex; align-items: center; gap: 9px; color: var(--muted); }
 .small-label { letter-spacing: .9px; }
